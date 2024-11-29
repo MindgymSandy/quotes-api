@@ -1,6 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const Quote = require('../models/Quote');
+const Quote = require('../models/quote');
+
+// 获取心语总数
+router.get('/count', async (req, res) => {
+  try {
+    const count = await Quote.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 获取随机一条心语
+router.get('/random', async (req, res) => {
+  try {
+    const count = await Quote.countDocuments();
+    const random = Math.floor(Math.random() * count);
+    const quote = await Quote.findOne().skip(random);
+    res.json(quote);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // 获取所有心语
 router.get('/', async (req, res) => {
@@ -24,18 +46,6 @@ router.get('/', async (req, res) => {
         totalQuotes: total
       }
     });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// 获取随机一条心语
-router.get('/random', async (req, res) => {
-  try {
-    const count = await Quote.countDocuments();
-    const random = Math.floor(Math.random() * count);
-    const quote = await Quote.findOne().skip(random);
-    res.json(quote);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -139,14 +149,6 @@ router.delete('/remove/duplicates', async (req, res) => {
   }
 });
 
-// 获取心语总数
-router.get('/count', async (req, res) => {
-  try {
-    const count = await Quote.countDocuments();
-    res.json({ count });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// ... 其他路由 ...
 
 module.exports = router;
