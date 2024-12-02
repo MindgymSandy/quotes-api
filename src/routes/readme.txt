@@ -66,3 +66,20 @@ API 端点说明
 1. 添加数据前请确保格式正确
 2. 建议定期检查并删除重复数据
 3. 添加新数据时注意检查是否已存在相同内容
+https://quotes-4ndf1zx7t-mindgymsandys-projects.vercel.app/quotes/
+wx.request({
+  url: 'https://quotes-4ndf1zx7t-mindgymsandys-projects.vercel.app/quotes/random',
+  method: 'GET',
+  success(res) {
+    if (res.data.status === 'success') {
+      const quote = res.data.data;
+      // 使用数据
+      console.log({
+        chinese: quote.content.zh,    // 中文内容
+        english: quote.content.en,    // 英文内容
+        source: quote.source,         // 来源
+        tags: quote.tags             // 标签
+      });
+    }
+  }
+});

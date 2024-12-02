@@ -1,3 +1,18 @@
+//const express = require('express');
+//const mongoose = require('mongoose');
+//const quotesRouter = require('./routes/quotes');
+
+//const app = express();
+
+//mongoose.connect(process.env.MONGODB_URI)
+//  .then(() => console.log('Connected to MongoDB'))
+//  .catch(err => console.error('Could not connect to MongoDB', err));
+
+//app.use(express.json());
+//app.use('/quotes', quotesRouter);
+
+//module.exports = app;
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -5,32 +20,36 @@ require('dotenv').config();
 
 const app = express();
 
+// 中间件
 app.use(cors());
 app.use(express.json());
 
-// 错误处理中间件
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+// 测试路由
+app.get('/', (req, res) => {
+  res.send('API is running');
 });
 
-// 基础路由测试
-app.get('/', async (req, res) => {
-  try {
-    res.json({ message: 'Welcome to Quotes API' });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: error.message });
-  }
+// MongoDB 连接
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// API 路由
+app.get('/quotes/random', async (req, res) => {
+  // ... 您的随机引用逻辑 ...
 });
 
-// 连接数据库
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('Could not connect to MongoDB:', err));
+// 端口设置
+const PORT = process.env.PORT || 3000;
 
-// 导出 app
-module.exports = app;
+// 修改监听方式
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+}).on('error', (err) => {
+  console.error('Server error:', err);
+});
+
+// 处理未捕获的异常
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+});
