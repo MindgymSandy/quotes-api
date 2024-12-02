@@ -1,21 +1,7 @@
-//const express = require('express');
-//const mongoose = require('mongoose');
-//const quotesRouter = require('./routes/quotes');
-
-//const app = express();
-
-//mongoose.connect(process.env.MONGODB_URI)
-//  .then(() => console.log('Connected to MongoDB'))
-//  .catch(err => console.error('Could not connect to MongoDB', err));
-
-//app.use(express.json());
-//app.use('/quotes', quotesRouter);
-
-//module.exports = app;
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const quotesRouter = require('./routes/quotes');
 require('dotenv').config();
 
 const app = express();
@@ -23,6 +9,9 @@ const app = express();
 // 中间件
 app.use(cors());
 app.use(express.json());
+
+// 挂载路由
+app.use('/quotes', quotesRouter);
 
 // 测试路由
 app.get('/', (req, res) => {
@@ -32,12 +21,10 @@ app.get('/', (req, res) => {
 // MongoDB 连接
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
-// API 路由
-app.get('/quotes/random', async (req, res) => {
-  // ... 您的随机引用逻辑 ...
-});
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
 
 // 端口设置
 const PORT = process.env.PORT || 3000;
